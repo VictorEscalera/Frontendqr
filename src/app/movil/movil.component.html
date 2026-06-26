@@ -1,0 +1,58 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Authenticator</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="dark" routerLink="/escritorio">
+        <ion-icon slot="start" name="desktop-outline"></ion-icon> WEB
+      </ion-button>
+      <ion-button color="medium" >
+        <ion-icon slot="start" name="phone-portrait-outline"></ion-icon> MOVIL
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light">
+  
+  <div class="ion-padding">
+    @for (cuenta of cuentas(); track cuenta.id) {
+      <ion-card class="cuenta-card ion-margin-bottom">
+        <ion-card-header class="ion-no-padding ion-padding-horizontal ion-padding-top">
+          <ion-item lines="none" class="ion-no-padding">
+            <ion-label>
+              <ion-text color="medium"><small>{{ cuenta.issuer }}</small></ion-text>
+              <p>{{ cuenta.label }}</p>
+            </ion-label>
+            <ion-button fill="clear" color="danger" slot="end" (click)="eliminarCuenta(cuenta.id)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-card-header>
+
+        <ion-card-content class="ion-text-center">
+          <h1 class="pin-text tracking-widest">
+            {{ cuenta.currentPin.substring(0, 3) }} {{ cuenta.currentPin.substring(3, 6) }}
+          </h1>
+          
+          <ion-progress-bar 
+            [value]="progreso()" 
+            [color]="progreso() > 0.2 ? 'primary' : 'danger'">
+          </ion-progress-bar>
+        </ion-card-content>
+      </ion-card>
+    } @empty {
+      <div class="empty-state ion-text-center">
+        <ion-icon name="scan-outline" color="medium"></ion-icon>
+        <h3><strong>No hay cuentas vinculadas</strong></h3>
+        <p color="medium">Toca el botón flotante para escanear el código QR del portal web y generar tus códigos TOTP.</p>
+      </div>
+    }
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="ion-margin">
+    <ion-fab-button color="primary" (click)="escanearQR()">
+      <ion-icon name="scan-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

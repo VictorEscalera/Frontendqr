@@ -1,0 +1,122 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Authenticator</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="dark">
+        <ion-icon slot="start" name="desktop-outline"></ion-icon> WEB
+      </ion-button>
+      <ion-button color="medium" routerLink="/movil">
+        <ion-icon slot="start" name="phone-portrait-outline"></ion-icon> MOVIL
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light">
+  <ion-grid fixed>
+    
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-card class="full-height-card">
+          <ion-card-header>
+            <ion-item lines="none" class="ion-no-padding">
+              <ion-icon color="success" size="large" name="shield-checkmark-outline" slot="start"></ion-icon>
+              <ion-label>
+                <p>Portal Web</p>
+                <ion-card-title>Alta de autenticador</ion-card-title>
+              </ion-label>
+            </ion-item>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-label position="floating">Servicio</ion-label>
+              <ion-input type="text" [(ngModel)]="servicioInput"></ion-input>
+            </ion-item>
+
+            <ion-item fill="outline" class="ion-margin-bottom">
+              <ion-label position="floating" color="success">Cuenta</ion-label>
+              <ion-input type="text" [(ngModel)]="cuentaInput"></ion-input>
+            </ion-item>
+
+            <ion-button expand="block" color="primary" (click)="generarQR()">
+              <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+              GENERAR QR
+            </ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="6">
+        <ion-card class="full-height-card ion-text-center">
+          <ion-card-content class="qr-container">
+            @if (qrDataString()) {
+              <div>
+                <qrcode [qrdata]="qrDataString()" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+                <h2 class="ion-margin-top"><strong>Escanea este código</strong></h2>
+                <p>Abre tu app móvil para registrar este servicio.</p>
+                
+                <ion-item lines="none" class="ion-margin-top" style="border: 1px solid #e0e0e0; border-radius: 8px;">
+                  <ion-input 
+                    type="text" 
+                    placeholder="Ingresa el PIN para activar" 
+                    maxlength="6"
+                    [ngModel]="pinActual()"
+                    (ngModelChange)="pinActual.set($event)"
+                    class="ion-text-center">
+                  </ion-input>
+                  <ion-button slot="end" color="success" (click)="activarRegistroActual()">
+                    Activar
+                  </ion-button>
+                </ion-item>
+              </div>
+            } @else {
+              <ion-icon name="qr-code-outline" class="qr-placeholder-icon"></ion-icon>
+              <h2 class="ion-margin-top"><strong>QR listo al crear el alta</strong></h2>
+              <p>La app móvil puede escanearlo y generar códigos TOTP localmente.</p>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="ion-padding-horizontal ion-margin-top">
+          <ion-text color="medium"><small>Registros</small></ion-text>
+          <h3><strong>Altas recientes</strong></h3>
+        </div>
+
+        @for (reg of registros(); track reg._id) {
+          <ion-card class="registro-card ion-margin-bottom">
+            <ion-item lines="none">
+              <ion-label>
+                <h2><strong>{{ reg.servicio }}</strong></h2>
+                <p>{{ reg.cuenta }}</p>
+                <ion-note><small>{{ reg.fecha | date:'M/d/yy, h:mm a' }}</small></ion-note>
+              </ion-label>
+
+              @if (reg.estado === 'Pendiente' || reg.estado === 'Activo') {
+                <ion-button fill="clear" color="medium" (click)="revocarRegistro(reg._id)">
+                  Revocar
+                </ion-button>
+              }
+
+              <ion-badge 
+                [color]="reg.estado === 'Pendiente' ? 'warning' : (reg.estado === 'Activo' ? 'success' : 'medium')" 
+                slot="end" 
+                class="ion-margin-horizontal">
+                {{ reg.estado }}
+              </ion-badge>
+
+              <ion-button fill="clear" color="danger" slot="end" (click)="eliminarRegistro(reg._id)">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-card>
+        }
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+</ion-content>

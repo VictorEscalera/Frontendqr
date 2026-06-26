@@ -1,0 +1,41 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title>Iniciar Sesión</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light">
+  <div class="login-container ion-padding">
+    <ion-card class="login-card">
+      <ion-card-header class="ion-text-center">
+        <ion-icon name="log-in-outline" color="primary" class="login-icon"></ion-icon>
+        <ion-card-title>Acceso Seguro</ion-card-title>
+        <p>Ingreso mi correo y el código TOTP de mi autenticador.</p>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item fill="outline" class="ion-margin-bottom">
+          <ion-icon slot="start" name="mail-outline" color="medium"></ion-icon>
+          <ion-label position="floating">Correo de mi cuenta</ion-label>
+          <ion-input type="email" [(ngModel)]="cuentaInput"></ion-input>
+        </ion-item>
+
+        <ion-item fill="outline" class="ion-margin-bottom">
+          <ion-icon slot="start" name="lock-closed-outline" color="medium"></ion-icon>
+          <ion-label position="floating">PIN de 6 dígitos</ion-label>
+          <ion-input type="text" maxlength="6" [(ngModel)]="pinInput"></ion-input>
+        </ion-item>
+
+        @if (mensaje()) {
+          <ion-text [color]="mensaje()?.tipo" class="ion-text-center ion-margin-bottom block">
+            <p><strong>{{ mensaje()?.texto }}</strong></p>
+          </ion-text>
+        }
+
+        <ion-button expand="block" color="primary" class="ion-margin-top" (click)="validarAcceso()">
+          VALIDAR ACCESO
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
