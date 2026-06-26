@@ -32,7 +32,7 @@ interface RegistroAlta {
 })
 export class EscritorioComponent implements OnInit {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5000/api';
+  private apiUrl = 'https://backendqr-gray.vercel.app/api';
 
   servicioInput = signal<string>('Servicio Demo');
   cuentaInput = signal<string>('usuario@empresa.com');
